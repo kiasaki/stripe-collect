@@ -9,6 +9,8 @@
 
     <style type="text/css">
       {{template "tachyons.min.css"}}
+      a {color: #357EDD;}
+      input:focus {outline: none;}
     </style>
 </head>
 <body>
@@ -16,3 +18,5 @@
     <h1 class="tc fw3">
       Pay Invoice
     </h1>
+
+    <section class="pa4 br2 bg-near-white">

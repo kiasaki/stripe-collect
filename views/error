@@ -1,0 +1,14 @@
+{{template "header"}}
+
+<h3>Oops! An error occured.</h3>
+
+<p>
+  We encountered an error we couldn't recover from, please try again later and
+  contact us if the problem persists.
+</p>
+
+{{if .}}
+<pre class="bg-white pa3 br2 f6 pre">{{.}}</pre>
+{{end}}
+
+{{template "footer"}}

@@ -1,0 +1,9 @@
+{
+  "number": "0001",
+  "client": "Acme Inc.",
+  "client_email": "hello@acme.com",
+  "amount": 133700,
+  "currency": "USD",
+  "status": "unpaid",
+  "stripe_charge_id": null
+}

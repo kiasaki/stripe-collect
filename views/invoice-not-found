@@ -1,0 +1,8 @@
+{{template "header"}}
+
+<h3>Can't find invoice with given id.</h3>
+<p>
+  Verify a valid invoice id is in the URL and reload the page.
+</p>
+
+{{template "footer"}}

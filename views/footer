@@ -1,4 +1,6 @@
-    <div class="pa3 mb3 bt bb tc">
+    </section>
+
+    <div class="pa3 mb3 tc">
         <a href="https://github.com/kiasaki/stripe-collect">stripe-collect</a>
         &mdash; Secured by
         <a href="https://stripe.com">Stripe</a>

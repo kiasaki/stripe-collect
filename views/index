@@ -1,3 +1,63 @@
 {{template "header"}}
-index
+
+<div class="cf">
+  <h3 class="m0 fl">{{.Client}}</h3>
+  <p class="m0 fr">Invoice Number: {{.Number}}</p>
+</div>
+
+<form class="bg-white br2" method="post">
+  <div class="f3 fw3 tc pa4 pt4">{{.FormattedAmount}}</div>
+
+  <div class="ph4 pb2">
+    <label class="db mb1">Card Number</label>
+    <input type="text" name="number" class="w-100 br2 pa2 ba bw1 b--moon-gray bg-near-white" placeholder="e.g., 0000 0000 0000 0000" autofocus />
+  </div>
+
+  <div class="cf ph3">
+    <div class="fl w-40 ph3">
+      <label class="db mb1">Expiration</label>
+      <select name="exp_year" class="w-100 br2 pa2 ba bw1 b--moon-gray bg-near-white" style="height:38px;">
+        <option value="2017">2017</option>
+        <option value="2018">2018</option>
+        <option value="2019">2019</option>
+        <option value="2020">2020</option>
+        <option value="2021">2021</option>
+        <option value="2022">2022</option>
+        <option value="2023">2023</option>
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+        <option value="2026">2026</option>
+      </select>
+    </div>
+    <div class="fl w-30">
+      <label class="db mb1">&nbsp;</label>
+      <select name="exp_month" class="w-100 br2 pa2 ba bw1 b--moon-gray bg-near-white" style="height:38px;">
+        <option value="01">01 - January</option>
+        <option value="02">02 - February</option>
+        <option value="03">03 - March</option>
+        <option value="04">04 - April</option>
+        <option value="05">05 - May</option>
+        <option value="06">06 - June</option>
+        <option value="07">07 - July</option>
+        <option value="08">08 - August</option>
+        <option value="09">09 - September</option>
+        <option value="10">10 - October</option>
+        <option value="11">11 - November</option>
+        <option value="12">12 - December</option>
+      </select>
+    </div>
+    <div class="fl w-30 ph3">
+      <label class="db mb1">CVC</label>
+      <input type="text" name="cvc" class="w-100 br2 pa2 ba bw1 b--moon-gray bg-near-white" placeholder="e.g., 123" />
+    </div>
+  </div>
+
+  <div class="pa4 pt3">
+    <button class="bg-blue white br2 pv2 ph3 w-100 ba b--blue tc f5" type="submit">
+      Pay invoice
+    </button>
+  </div>
+</form>
+
+
 {{template "footer"}}

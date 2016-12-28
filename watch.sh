@@ -8,6 +8,10 @@ function finish {
 }
 trap finish EXIT
 
+if [ -f .env ]; then
+  source .env
+fi
+
 while true; do
   printf "\E[32m"
   make build
