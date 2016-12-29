@@ -17,16 +17,19 @@ your invoices by credit card.
 - 1 file app you can easily tweak if needed
 
 | Page | Screenshot |
-|:---:| --- |
-| Pay | ![pay](https://raw.githubusercontent.com/kiasaki/stripe-collect/master/screenshots/pay.png) |
-| Success | ![success](https://raw.githubusercontent.com/kiasaki/stripe-collect/master/screenshots/success.png) |
-| Missing Invoice ID | ![not found](https://raw.githubusercontent.com/kiasaki/stripe-collect/master/screenshots/not-found.png) |
+|:---:|:---:|
+| Pay | <img src="https://raw.githubusercontent.com/kiasaki/stripe-collect/master/screenshots/pay.png" height="250px" /> |
+| Success | <img src="https://raw.githubusercontent.com/kiasaki/stripe-collect/master/screenshots/success.png" height="250px" /> |
+| Missing Invoice ID | <img src="https://raw.githubusercontent.com/kiasaki/stripe-collect/master/screenshots/not-found.png" height="250px" /> |
 
 ## deploying
 
-And easy way to deploy this app with minimum hassle and maintenance is using Heroku.
+And easy way to deploy this app with minimum hassle and maintenance is using **Heroku**.
 
-Create a new Heroku app and set the following environment variables:
+_**stripe-collect** uses **Google Cloud Storage** as backing store, you'll have to create a bucket
+and service account for this app._
+
+Create a new **Heroku** app and set the following environment variables:
 
 ```
 GOVERSION=go1.7.4
