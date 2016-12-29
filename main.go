@@ -156,6 +156,15 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Render success when invoice is paid
+	if invoice.Status == "paid" {
+		renderTemplate(w, r, "success", H{
+			"invoice": invoice,
+			"pdfUrl":  pdfUrl,
+		})
+		return
+	}
+
 	renderTemplate(w, r, "index", H{
 		"invoice": invoice,
 		"pdfUrl":  pdfUrl,
@@ -199,13 +208,27 @@ func chargeInvoice(w http.ResponseWriter, r *http.Request, invoiceId string, inv
 
 	// Set invoice as paid
 	invoice.Status = "paid"
-	invoice.StripeChargeId = ch.ID
+	invoice.StripeChargeId = ch.ID[3:]
 
-	renderTemplate(w, r, "success", H{
-		"invoice": invoice,
-		"pdfUrl":  pdfUrl,
-		"charge":  ch,
-	})
+	// JSON encode invoice
+	contentsString, err := json.MarshalIndent(invoice, "", "  ")
+	if err != nil {
+		errorHandler(w, r, err)
+		return
+	}
+
+	// Upload updated invoice
+	wc := bucket.Object(invoiceId + ".json").NewWriter(ctx)
+	if _, err := fmt.Fprintf(wc, string(contentsString)); err != nil {
+		errorHandler(w, r, err)
+		return
+	}
+	if err := wc.Close(); err != nil {
+		errorHandler(w, r, err)
+		return
+	}
+
+	http.Redirect(w, r, "/?i="+invoiceId, http.StatusFound)
 }
 
 func errorHandler(w http.ResponseWriter, r *http.Request, err error) {

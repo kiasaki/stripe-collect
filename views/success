@@ -9,7 +9,7 @@
 <div class="mb3 pa3 br2 bg-washed-green dark-green ba bw1 b--dark-green">
   <h3 class="ma0 mb3">Success!</h3>
   <p class="ma0 mb3">
-    Charge Reference ID: <strong>{{.charge.ID}}</strong>
+    Charge Reference ID: <strong>{{.invoice.StripeChargeId}}</strong>
   </p>
   <p class="ma0">
     Thank you for your business. 👍&nbsp;😸
