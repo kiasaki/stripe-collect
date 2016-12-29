@@ -11,6 +11,9 @@ import (
 	"os"
 	"time"
 
+	stripe "github.com/stripe/stripe-go"
+	"github.com/stripe/stripe-go/charge"
+
 	"golang.org/x/oauth2/google"
 	"golang.org/x/oauth2/jwt"
 	"google.golang.org/api/option"
@@ -23,6 +26,7 @@ type H map[string]interface{}
 type Invoice struct {
 	Number         string `json:"number"`
 	Client         string `json:"client"`
+	ClientEmail    string `json:"client_email"`
 	Amount         int    `json:"amount"`
 	Currency       string `json:"currency"`
 	Status         string `json:"status"`
@@ -42,6 +46,9 @@ var notFoundCache = map[string]interface{}{}
 func init() {
 	// Load templates
 	t = template.Must(template.ParseGlob("views/*"))
+
+	// Setup Stripe
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
 
 	// Setup Google Cloud Datastore client
 	ctx = context.Background()
@@ -145,7 +152,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	// If user just posted CC info, process it
 	if r.Method == "POST" {
-		chargeInvoice(w, r, invoiceId, invoice)
+		chargeInvoice(w, r, invoiceId, invoice, pdfUrl)
 		return
 	}
 
@@ -155,8 +162,50 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func chargeInvoice(w http.ResponseWriter, r *http.Request, invoiceId string, invoice Invoice) {
-	// statement_descriptor
+func chargeInvoice(w http.ResponseWriter, r *http.Request, invoiceId string, invoice Invoice, pdfUrl string) {
+	if err := r.ParseForm(); err != nil {
+		errorHandler(w, r, err)
+		return
+	}
+
+	// Setup Stripe charge params
+	params := &stripe.ChargeParams{
+		Amount:    uint64(invoice.Amount),
+		Currency:  stripe.Currency(invoice.Currency),
+		Statement: "Invoice " + invoice.Number,
+		Email:     invoice.ClientEmail,
+	}
+	params.SetSource(&stripe.CardParams{
+		Number: r.FormValue("number"),
+		Month:  r.FormValue("exp_month"),
+		Year:   r.FormValue("exp_year"),
+		CVC:    r.FormValue("cvc"),
+	})
+
+	// Create Stripe charge
+	ch, err := charge.New(params)
+	if err != nil {
+		message := "An unknown error occured handling your payment."
+		if e, ok := err.(*stripe.Error); ok {
+			message = e.Msg
+		}
+		renderTemplate(w, r, "index", H{
+			"invoice": invoice,
+			"pdfUrl":  pdfUrl,
+			"error":   message,
+		})
+		return
+	}
+
+	// Set invoice as paid
+	invoice.Status = "paid"
+	invoice.StripeChargeId = ch.ID
+
+	renderTemplate(w, r, "success", H{
+		"invoice": invoice,
+		"pdfUrl":  pdfUrl,
+		"charge":  ch,
+	})
 }
 
 func errorHandler(w http.ResponseWriter, r *http.Request, err error) {

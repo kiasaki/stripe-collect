@@ -1,0 +1,21 @@
+{{template "header"}}
+
+<div class="tc">
+  <h3 class="ma0 mb2">{{.invoice.Client}}</h3>
+  <p class="ma0 mb4">Invoice Number: {{.invoice.Number}}</p>
+  <div class="mb4 f3 fw3">{{.invoice.FormattedAmount}}</div>
+</div>
+
+<div class="mb3 pa3 br2 bg-washed-green dark-green ba bw1 b--dark-green">
+  <h3 class="ma0 mb3">Success!</h3>
+  <p class="ma0 mb3">
+    Charge Reference ID: <strong>{{.charge.ID}}</strong>
+  </p>
+  <p class="ma0">
+    Thank you for your business. 👍&nbsp;😸
+  </p>
+</div>
+
+{{template "pdf-download-button" .}}
+
+{{template "footer"}}

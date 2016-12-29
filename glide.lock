@@ -1,5 +1,5 @@
 hash: 13ab7499e4abf07975614522e43f4b05ae75cdff1747656ccee1a5c7f55816e3
-updated: 2016-12-28T11:12:53.731121657-05:00
+updated: 2016-12-28T19:25:06.995190277-05:00
 imports:
 - name: cloud.google.com/go
   version: 4e436992a513aa1dec28f8adda5c8173724d493e
@@ -14,6 +14,11 @@ imports:
   - proto
 - name: github.com/googleapis/gax-go
   version: da06d194a00e19ce00d9011a13931c3f6f6887c7
+- name: github.com/stripe/stripe-go
+  version: c49cef41dc0a5232570890d139748140a76d1f6e
+  subpackages:
+  - charge
+  - orderitem
 - name: golang.org/x/net
   version: 45e771701b814666a7eb299e6c7a57d0b1799e91
   subpackages:
@@ -32,6 +37,14 @@ imports:
   - internal
   - jws
   - jwt
+- name: golang.org/x/text
+  version: a49bea13b776691cb1b49873e5d8df96ec74831a
+  subpackages:
+  - currency
+  - internal
+  - internal/format
+  - internal/tag
+  - language
 - name: google.golang.org/api
   version: 55146ba61254fdb1c26d65ff3c04bc1611ad73fb
   subpackages:
