@@ -9,12 +9,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"golang.org/x/oauth2/google"
+	"golang.org/x/oauth2/jwt"
 	"google.golang.org/api/option"
 
 	"cloud.google.com/go/storage"
 )
+
+type H map[string]interface{}
 
 type Invoice struct {
 	Number         string `json:"number"`
@@ -26,11 +30,12 @@ type Invoice struct {
 }
 
 func (i Invoice) FormattedAmount() string {
-	return fmt.Sprintf("%s $%.2f", i.Currency, float64(i.Amount)/100)
+	return fmt.Sprintf("$%.2f %s", float64(i.Amount)/100, i.Currency)
 }
 
 var t *template.Template
 var ctx context.Context
+var jwtConfig *jwt.Config
 var bucket *storage.BucketHandle
 var notFoundCache = map[string]interface{}{}
 
@@ -45,6 +50,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	jwtConfig = conf
 	client, err := storage.NewClient(
 		ctx,
 		option.WithTokenSource(conf.TokenSource(ctx)),
@@ -129,13 +135,24 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Generate PDF Signed URL for download
+	var pdfUrl string
+	pdfUrl, err = generateSignedUrl(invoiceId)
+	if err != nil {
+		errorHandler(w, r, err)
+		return
+	}
+
 	// If user just posted CC info, process it
 	if r.Method == "POST" {
 		chargeInvoice(w, r, invoiceId, invoice)
 		return
 	}
 
-	renderTemplate(w, r, "index", invoice)
+	renderTemplate(w, r, "index", H{
+		"invoice": invoice,
+		"pdfUrl":  pdfUrl,
+	})
 }
 
 func chargeInvoice(w http.ResponseWriter, r *http.Request, invoiceId string, invoice Invoice) {
@@ -147,4 +164,17 @@ func errorHandler(w http.ResponseWriter, r *http.Request, err error) {
 	if err := t.ExecuteTemplate(w, "error", err); err != nil {
 		w.Write([]byte("Internal Server Error"))
 	}
+}
+
+func generateSignedUrl(invoiceId string) (string, error) {
+	return storage.SignedURL(
+		os.Getenv("GOOGLE_BUCKET_ID"),
+		invoiceId+".pdf",
+		&storage.SignedURLOptions{
+			GoogleAccessID: jwtConfig.Email,
+			PrivateKey:     jwtConfig.PrivateKey,
+			Method:         "GET",
+			Expires:        time.Now().Add(15 * time.Minute),
+		},
+	)
 }

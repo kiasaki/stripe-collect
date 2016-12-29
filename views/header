@@ -10,6 +10,7 @@
     <style type="text/css">
       {{template "tachyons.min.css"}}
       a {color: #357EDD;}
+      button {cursor: pointer;}
       input:focus {outline: none;}
     </style>
 </head>
