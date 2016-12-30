@@ -43,7 +43,7 @@ Next and last step is to deploy:
 ```
 git clone git@github.com:kiasaki/stripe-collect.git
 cd stripe-collect
-heroku git:remote -a <heroku app name>
+heroku git:remote -a <your heroku app name>
 git push heroku master
 ```
 
